@@ -1,1 +1,156 @@
+#include<stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX_LINE_LENGTH 1000
 
+
+void report()
+{
+	printf("report");
+
+
+    // Substitute the full file path
+    // for the string file_path
+    FILE* fp = fopen("C:\\Users\\LENOVO\\Downloads\\Copy of Sample_inventory(1).csv", "r");
+ 
+    if (!fp)
+        printf("Can't open file\n");
+ 
+    else {
+        // Here we have taken size of
+        // array 1024 you can modify it
+        char buffer[1024];
+ 
+        int row = 0;
+        int column = 0;
+ 
+        while (fgets(buffer,1024, fp)) {
+            column = 0;
+            row++;
+ 
+            // To avoid printing of column
+            // names in file can be changed
+            // according to need
+            if (row == 1)
+                continue;
+ 
+            // Splitting the data
+            char* value = strtok(buffer, ", ");
+ 
+            while (value) {
+                // Column 1
+                if (column == 0) {
+                    printf("\tProduct ID :");
+                }
+ 
+                // Column 2
+                if (column == 1) {
+                    printf("\tProduct Name :");
+                }
+ 
+                // Column 3
+                if (column == 2) {
+                    printf("\tCategory  :");
+                }
+                if (column == 3) {
+                    printf("\tQuantity :");
+                }
+                if (column == 4) {
+                    printf("\tCost Price:");
+                }
+                if (column == 5) {
+                    printf("\tSelling Price :");
+                }
+                
+                printf("%s", value);
+                value = strtok(NULL, ", ");
+                column++;
+            }
+ 
+            printf("\n");
+        }
+ 
+        // Close the file
+        fclose(fp);
+    }
+   
+
+}
+void updating( int row, int col, const char* newData)
+{
+	FILE* file = fopen("C:\\Users\\LENOVO\\Downloads\\Copy of Sample_inventory(1).csv", "r");
+    if (file == NULL) {
+        printf("Failed to open file.\n");
+        return;
+    }
+
+    char lines[MAX_LINE_LENGTH][MAX_LINE_LENGTH];
+    int rowIndex = 0;
+    while (fgets(lines[rowIndex], MAX_LINE_LENGTH, file) != NULL) {
+        rowIndex++;
+    }
+
+    fclose(file);
+
+    if (row >= 0 && row < rowIndex) {
+        const char* delimiter = ",";
+        char* line = strdup(lines[row]);
+        char* token = strtok(line, delimiter);
+        int colIndex = 0;
+
+        while (token != NULL) {
+            if (colIndex == col) {
+                strcpy(token, newData);
+                break;
+            }
+            token = strtok(NULL, delimiter);
+            colIndex++;
+        }
+
+        file = fopen("C:\\Users\\LENOVO\\Downloads\\Copy of Sample_inventory(1).csv", "w");
+        if (file == NULL) {
+            printf("Failed to open file.\n");
+            return;
+        }
+
+        for (int i = 0; i < rowIndex; i++) {
+            fprintf(file, "%s", lines[i]);
+        }
+
+        fclose(file);
+        free(line);
+    } else {
+        printf("Invalid row index.\n");
+    }
+    printf("updated");
+}
+	 
+	
+
+
+int main()
+{
+	int ch,i,j;
+	char nd[MAX_LINE_LENGTH];
+	printf("1.REPORT(transaction details,materials present,demand,shortage,etc.)\n2.Updating(movements storing)\n");
+	printf("Enter=");
+	scanf("%d",&ch);
+	switch(ch)
+	{
+	
+	case 1:
+		report();
+		break;
+	case 2:
+		scanf("%d%d",&i,&j);
+		scanf("%s",&nd);
+	   updating(i,j,nd);
+	   report();
+	   break;
+	default:
+	   printf("Sorry,,,, we did not understand");
+}
+	   	
+	return 0;
+	
+}
